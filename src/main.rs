@@ -2,6 +2,7 @@ use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 
+#[derive(Debug, Clone, Copy)]
 enum Token {
     Vtype,      // for the types of variables and function
     Num,        // for signed integers
@@ -43,8 +44,38 @@ fn main() {
 
 
     let tokens = read_tokens(&contents);
+    println!("{:?}", tokens);
 }
 
 fn read_tokens(contents: &String) -> Vec<Token> {
-    Vec::new()
+    let mut tokens = Vec::new();
+    for word in contents.split_whitespace() {
+        let token = match word {
+            "vtype" => Token::Vtype,
+            "num" => Token::Num,
+            "character" => Token::Character,
+            "boolstr" => Token::Boolstr,
+            "literal" => Token::Literal,
+            "id" => Token::Id,
+            "if" => Token::If,
+            "else" => Token::Else,
+            "while" => Token::While,
+            "return" => Token::Return,
+            "class" => Token::Class,
+            "addsub" => Token::Addsub,
+            "multdiv" => Token::Multdiv,
+            "assign" => Token::Assign,
+            "comp" => Token::Comp,
+            "semi" => Token::Semi,
+            "comma" => Token::Comma,
+            "lparen" => Token::Lparen,
+            "rparen" => Token::Rparen,
+            "lbrace" => Token::Lbrace,
+            "rbrace" => Token::Rbrace,
+            _ => panic!("unknown token"),
+        };
+        tokens.push(token);
+    }
+
+    tokens
 }
