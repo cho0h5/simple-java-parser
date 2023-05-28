@@ -1,4 +1,5 @@
 mod token_reader;
+mod parser;
 mod utils;
 
 fn main() {
@@ -6,7 +7,10 @@ fn main() {
 
     let raw_contents = utils::read_file(&filename);
 
-    let tokens = token_reader::read_tokens(&raw_contents);
-    println!("{:?}", tokens);
+    let mut tokens = token_reader::read_tokens(&raw_contents);
+    println!("Parsed tokens: {:?}", tokens);
+
+    parser::parse(tokens);
+
 }
 
