@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 pub enum Token {
     // terminals
     Vtype,      // for the types of variables and function
@@ -24,6 +24,9 @@ pub enum Token {
     Rparen,     // for )
     Lbrace,     // for {
     Rbrace,     // for }
+
+    // for EOL
+    EOL,
 
     // non-terminals
     CODE,
@@ -72,6 +75,7 @@ pub fn read_tokens(contents: &String) -> VecDeque<Token> {
         };
         tokens.push_back(token);
     }
+    tokens.push_back(Token::EOL);
 
     tokens
 }

@@ -9,7 +9,7 @@ pub fn get_filename() -> String {
     }
 }
 
-pub fn read_file(filename: &String) -> String {
+pub fn read_file(filename: &str) -> String {
     let mut f = File::open(filename).expect("file not found");
     let mut contents = String::new();
     f.read_to_string(&mut contents).expect("Something went wrong reading the file");
