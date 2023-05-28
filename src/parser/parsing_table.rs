@@ -11,69 +11,61 @@ pub enum TableElement {
     Accepted,
 }
 
-struct Closure {
+pub struct Reduction {
     left: Token,
     right: usize,
 }
 
-impl Closure {
-    fn from(left: Token, right: usize) -> Closure {
-        Closure { left: left, right: right }
+impl Reduction {
+    fn from(left: Token, right: usize) -> Reduction {
+        Reduction { left: left, right: right }
     }
 }
 
-pub fn get_closure_table() -> HashMap<usize, Closure> {
-    hashmap.insert(0, Closure::from(CODE, 0));
-    hashmap.insert(1, Closure::from(CODE_, 0));
-    hashmap.insert(2, Closure::from(CODE, 0));
-    hashmap.insert(3, Closure::from(CODE, 0));
-    hashmap.insert(4, Closure::from(CODE, 0));
-    hashmap.insert(7, Closure::from(CODE, 0));
-    hashmap.insert(8, Closure::from(CODE, 0));
-    hashmap.insert(9, Closure::from(CODE, 0));
-    hashmap.insert(13, Closure::from(VDECL, 0));
-    hashmap.insert(14, Closure::from(ARG, 0));
-    hashmap.insert(16, Closure::from(VDECL, 0));
-    hashmap.insert(17, Closure::from(ODECL, 0));
-    hashmap.insert(20, Closure::from(ASSIGN, 0));
-    hashmap.insert(21, Closure::from(RHS, 0));
-    hashmap.insert(22, Closure::from(RHS, 0));
-    hashmap.insert(23, Closure::from(RHS, 0));
-    hashmap.insert(24, Closure::from(RHS, 0));
-    hashmap.insert(25, Closure::from(EXPR, 0));
-    hashmap.insert(26, Closure::from(EXPR_, 0));
-    hashmap.insert(28, Closure::from(EXPR__, 0));
-    hashmap.insert(29, Closure::from(EXPR__, 0));
-    hashmap.insert(31, Closure::from(ODECL, 0));
-    hashmap.insert(32, Closure::from(ODECL, 0));
-    hashmap.insert(34, Closure::from(MOREARGS, 0));
-    hashmap.insert(38, Closure::from(CDECL, 0));
-    hashmap.insert(39, Closure::from(ODECL, 0));
-    hashmap.insert(40, Closure::from(ODECL, 0));
-    hashmap.insert(41, Closure::from(BLOCK, 0));
-    hashmap.insert(42, Closure::from(ARG, 0));
-    hashmap.insert(44, Closure::from(EXPR, 0));
-    hashmap.insert(45, Closure::from(EXPR_, 0));
-    hashmap.insert(46, Closure::from(EXPR__, 0));
-    hashmap.insert(48, Closure::from(BLOCK, 0));
-    hashmap.insert(49, Closure::from(STMT, 0));
-    hashmap.insert(58, Closure::from(BLOCK, 0));
-    hashmap.insert(59, Closure::from(STMT, 0));
-    hashmap.insert(63, Closure::from(MOREARGS, 0));
-    hashmap.insert(64, Closure::from(FDECL, 0));
-    hashmap.insert(67, Closure::from(COND, 0));
-    hashmap.insert(69, Closure::from(MOREARGS, 0));
-    hashmap.insert(70, Closure::from(RETURN, 0));
-    hashmap.insert(74, Closure::from(BLOCK, 0));
-    hashmap.insert(75, Closure::from(COND, 0));
-    hashmap.insert(76, Closure::from(BLOCK, 0));
-    hashmap.insert(79, Closure::from(ELSE, 0));
-    hashmap.insert(80, Closure::from(STMT, 0));
-    hashmap.insert(81, Closure::from(STMT, 0));
-    hashmap.insert(83, Closure::from(BLOCK, 0));
-    hashmap.insert(85, Closure::from(ELSE, 0));
+pub fn get_reduction_table() -> Vec<Reduction> {
+    let mut table = vec![];
 
-    hashmap
+    table.push(Reduction::from(CODE_, 1));
+    table.push(Reduction::from(CODE, 2));
+    table.push(Reduction::from(CODE, 2));
+    table.push(Reduction::from(CODE, 2));
+    table.push(Reduction::from(CODE, 0));
+    table.push(Reduction::from(VDECL, 3));
+    table.push(Reduction::from(VDECL, 3));
+    table.push(Reduction::from(ASSIGN, 3));
+    table.push(Reduction::from(RHS, 1));
+    table.push(Reduction::from(RHS, 1));
+    table.push(Reduction::from(RHS, 1));
+    table.push(Reduction::from(RHS, 1));
+    table.push(Reduction::from(EXPR, 3));
+    table.push(Reduction::from(EXPR, 1));
+    table.push(Reduction::from(EXPR_, 3));
+    table.push(Reduction::from(EXPR_, 1));
+    table.push(Reduction::from(EXPR__, 3));
+    table.push(Reduction::from(EXPR__, 1));
+    table.push(Reduction::from(EXPR__, 1));
+    table.push(Reduction::from(FDECL, 0));
+    table.push(Reduction::from(ARG, 3));
+    table.push(Reduction::from(ARG, 0));
+    table.push(Reduction::from(MOREARGS, 4));
+    table.push(Reduction::from(MOREARGS, 0));
+    table.push(Reduction::from(BLOCK, 2));
+    table.push(Reduction::from(BLOCK, 0));
+    table.push(Reduction::from(STMT, 1));
+    table.push(Reduction::from(STMT, 2));
+    table.push(Reduction::from(STMT, 8));
+    table.push(Reduction::from(STMT, 7));
+    table.push(Reduction::from(COND, 3));
+    table.push(Reduction::from(COND, 1));
+    table.push(Reduction::from(ELSE, 4));
+    table.push(Reduction::from(ELSE, 0));
+    table.push(Reduction::from(RETURN, 4));
+    table.push(Reduction::from(CDECL, 5));
+    table.push(Reduction::from(ODECL, 2));
+    table.push(Reduction::from(ODECL, 2));
+    table.push(Reduction::from(ODECL, 0));
+
+    table
 }
 
 pub fn get_parsing_table() -> Vec<HashMap<Token, TableElement>> {
@@ -792,5 +784,11 @@ mod tests {
     fn check_action_and_goto_for_85_While() {
         let table = get_parsing_table();
         assert_eq!(table[85][&While], Reduce(32));
+    }
+
+    #[test]
+    fn check_length_of_reduction_table() {
+        let table = get_reduction_table();
+        assert_eq!(table.len(), 39);
     }
 }

@@ -19,6 +19,7 @@ impl StackItem {
 
 pub fn parse(mut tokens: VecDeque<Token>) {
     let parsing_table = parsing_table::get_parsing_table();
+    let reduction_table = parsing_table::get_reduction_table();
     let mut stack = vec![StackItem::from(0, None)];
 
     loop {
@@ -47,3 +48,5 @@ fn shift(tokens: &mut VecDeque<Token>, stack: &mut Vec<StackItem>, state: usize)
     println!("stack: {:?}", stack);
     println!("tokens: {:?}\n", tokens);
 }
+
+// fn reduce(stack: &mut Vec<StackItem>, 
