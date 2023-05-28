@@ -4,6 +4,8 @@ use std::collections::VecDeque;
 
 use crate::token_reader::Token;
 use crate::parser::parsing_table::TableElement::*;
+use crate::parser::parsing_table::Reduction;
+use crate::parser::parsing_table::TableElement;
 
 #[derive(Debug)]
 struct StackItem {
@@ -33,20 +35,32 @@ pub fn parse(mut tokens: VecDeque<Token>) {
         println!("[try] {:?}", parsing_table[current_state][&next_token]);
 
         match parsing_table[current_state][&next_token] {
-            Shift(state) => shift(&mut tokens, &mut stack, state),
-            Reduce(state) => unimplemented!(),
-            Goto(state) => unimplemented!(),
-            Accepted => unimplemented!()
+            Shift(next_state) => shift_goto(&mut tokens, &mut stack, next_state),
+            Reduce(reduction_index) => reduce(&mut tokens, &mut stack, reduction_table[reduction_index]),
+            Goto(next_state) => shift_goto(&mut tokens, &mut stack, next_state),
+            Accepted => break,
         };
     }
+    println!("\nAccepted!!!");
 }
 
-fn shift(tokens: &mut VecDeque<Token>, stack: &mut Vec<StackItem>, state: usize) {
+fn shift_goto(tokens: &mut VecDeque<Token>, stack: &mut Vec<StackItem>, next_state: usize) {
     let next_token = tokens.pop_front().unwrap();
-    stack.push(StackItem::from(state, Some(next_token)));
-    println!("[shift] {} {:?}", state, next_token);
+    stack.push(StackItem::from(next_state, Some(next_token)));
+
+    println!("[shift/goto] {} {:?}", next_state, next_token);
     println!("stack: {:?}", stack);
     println!("tokens: {:?}\n", tokens);
 }
 
-// fn reduce(stack: &mut Vec<StackItem>, 
+fn reduce(tokens: &mut VecDeque<Token>, stack: &mut Vec<StackItem>, reduction: Reduction) {
+    let new_len = stack.len() - reduction.right;
+    stack.truncate(new_len);
+
+    let current_state = stack.last().unwrap().state;
+    tokens.push_front(reduction.left);
+
+    println!("[REDUCE] {:?}", reduction.left);
+    println!("stack: {:?}", stack);
+    println!("tokens: {:?}\n", tokens);
+}

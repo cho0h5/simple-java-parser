@@ -11,9 +11,10 @@ pub enum TableElement {
     Accepted,
 }
 
+#[derive(Clone, Copy)]
 pub struct Reduction {
-    left: Token,
-    right: usize,
+    pub left: Token,
+    pub right: usize,
 }
 
 impl Reduction {
@@ -25,7 +26,7 @@ impl Reduction {
 pub fn get_reduction_table() -> Vec<Reduction> {
     let mut table = vec![];
 
-    table.push(Reduction::from(CODE_, 1));
+    table.push(Reduction::from(CODE_, 1));      //  0
     table.push(Reduction::from(CODE, 2));
     table.push(Reduction::from(CODE, 2));
     table.push(Reduction::from(CODE, 2));
@@ -35,7 +36,7 @@ pub fn get_reduction_table() -> Vec<Reduction> {
     table.push(Reduction::from(ASSIGN, 3));
     table.push(Reduction::from(RHS, 1));
     table.push(Reduction::from(RHS, 1));
-    table.push(Reduction::from(RHS, 1));
+    table.push(Reduction::from(RHS, 1));        // 10
     table.push(Reduction::from(RHS, 1));
     table.push(Reduction::from(EXPR, 3));
     table.push(Reduction::from(EXPR, 1));
@@ -44,8 +45,8 @@ pub fn get_reduction_table() -> Vec<Reduction> {
     table.push(Reduction::from(EXPR__, 3));
     table.push(Reduction::from(EXPR__, 1));
     table.push(Reduction::from(EXPR__, 1));
-    table.push(Reduction::from(FDECL, 0));
-    table.push(Reduction::from(ARG, 3));
+    table.push(Reduction::from(FDECL, 9));
+    table.push(Reduction::from(ARG, 3));        // 20
     table.push(Reduction::from(ARG, 0));
     table.push(Reduction::from(MOREARGS, 4));
     table.push(Reduction::from(MOREARGS, 0));
@@ -55,15 +56,15 @@ pub fn get_reduction_table() -> Vec<Reduction> {
     table.push(Reduction::from(STMT, 2));
     table.push(Reduction::from(STMT, 8));
     table.push(Reduction::from(STMT, 7));
-    table.push(Reduction::from(COND, 3));
+    table.push(Reduction::from(COND, 3));       // 30
     table.push(Reduction::from(COND, 1));
     table.push(Reduction::from(ELSE, 4));
     table.push(Reduction::from(ELSE, 0));
-    table.push(Reduction::from(RETURN, 4));
+    table.push(Reduction::from(RETURN, 3));
     table.push(Reduction::from(CDECL, 5));
     table.push(Reduction::from(ODECL, 2));
     table.push(Reduction::from(ODECL, 2));
-    table.push(Reduction::from(ODECL, 0));
+    table.push(Reduction::from(ODECL, 0));      // 38
 
     table
 }
