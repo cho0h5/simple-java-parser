@@ -5,9 +5,9 @@ use crate::token_reader::Token::*;
 
 #[derive(Debug, PartialEq)]
 pub enum TableElement {
-    Shift(u32),
-    Reduce(u32),
-    Goto(u32),
+    Shift(usize),
+    Reduce(usize),
+    Goto(usize),
     Accepted,
 }
 
