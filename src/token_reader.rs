@@ -74,7 +74,7 @@ pub fn read_tokens(contents: &String) -> VecDeque<Token> {
             "rparen" => Token::Rparen,
             "lbrace" => Token::Lbrace,
             "rbrace" => Token::Rbrace,
-            _ => panic!("unknown token"),
+            unknown_token => panic!("unknown token: {}", unknown_token),
         };
         tokens.push_back(token);
     }
