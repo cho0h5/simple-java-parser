@@ -24,5 +24,5 @@ pub fn parse(tokens: VecDeque<Token>) {
     
     println!("parsing table");
     let parsing_table = parsing_table::get_parsing_table();
-    println!("{:#?}", parsing_table);
+    println!("{:?}", parsing_table);
 }

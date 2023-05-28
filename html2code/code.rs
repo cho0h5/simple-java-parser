@@ -1,19 +1,4 @@
-use std::collections::HashMap;
-use TableElement::*;
-use crate::token_reader::Token;
-use crate::token_reader::Token::*;
 
-#[derive(Debug, PartialEq)]
-pub enum TableElement {
-    Shift(u32),
-    Reduce(u32),
-    Goto(u32),
-    Accepted,
-}
-
-pub fn get_parsing_table() -> Vec<HashMap<Token, TableElement>> {
-    let mut table = vec![];
-    
     // for state 0
     let mut hashmap = HashMap::new();
     hashmap.insert(Vtype, Shift(5));
@@ -27,7 +12,7 @@ pub fn get_parsing_table() -> Vec<HashMap<Token, TableElement>> {
 
     // for state 1
     let mut hashmap = HashMap::new();
-    hashmap.insert(EOL, Accepted);
+    hashmap.insert(EOL, Goto(acc));
     table.push(hashmap);
 
     // for state 2
@@ -643,89 +628,3 @@ pub fn get_parsing_table() -> Vec<HashMap<Token, TableElement>> {
     hashmap.insert(While, Reduce(32));
     hashmap.insert(Return, Reduce(32));
     table.push(hashmap);
-
-    table
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn check_number_of_state() {
-        let table = get_parsing_table();
-        assert_eq!(table.len(), 86);
-    }
-
-    #[test]
-    fn check_number_of_action_and_goto_for_state0() {
-        let table = get_parsing_table();
-        assert_eq!(table[0].len(), 7);
-    }
-
-    #[test]
-    fn check_number_of_action_and_goto_for_state18() {
-        let table = get_parsing_table();
-        assert_eq!(table[18].len(), 1);
-    }
-
-    #[test]
-    fn check_number_of_action_and_goto_for_state40() {
-        let table = get_parsing_table();
-        assert_eq!(table[40].len(), 1);
-    }
-
-    #[test]
-    fn check_number_of_action_and_goto_for_state85() {
-        let table = get_parsing_table();
-        assert_eq!(table[85].len(), 6);
-    }
-
-    #[test]
-    fn check_action_and_goto_for_0_Vtype() {
-        let table = get_parsing_table();
-        assert_eq!(table[0][&Vtype], Shift(5));
-    }
-
-    #[test]
-    fn check_action_and_goto_for_1_EOL() {
-        let table = get_parsing_table();
-        assert_eq!(table[1][&EOL], Accepted);
-    }
-
-    #[test]
-    fn check_action_and_goto_for_4_CODE() {
-        let table = get_parsing_table();
-        assert_eq!(table[4][&CODE], Goto(9));
-    }
-
-    #[test]
-    fn check_action_and_goto_for_15_EXPR__() {
-        let table = get_parsing_table();
-        assert_eq!(table[15][&EXPR__], Goto(26));
-    }
-
-    #[test]
-    fn check_action_and_goto_for_32_Rbrace() {
-        let table = get_parsing_table();
-        assert_eq!(table[32][&Rbrace], Reduce(38));
-    }
-
-    #[test]
-    fn check_action_and_goto_for_41_Id() {
-        let table = get_parsing_table();
-        assert_eq!(table[41][&Id], Shift(54));
-    }
-
-    #[test]
-    fn check_action_and_goto_for_46_Rparen() {
-        let table = get_parsing_table();
-        assert_eq!(table[46][&Rparen], Reduce(16));
-    }
-
-    #[test]
-    fn check_action_and_goto_for_85_While() {
-        let table = get_parsing_table();
-        assert_eq!(table[85][&While], Reduce(32));
-    }
-}

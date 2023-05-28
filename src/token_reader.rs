@@ -30,10 +30,13 @@ pub enum Token {
 
     // non-terminals
     CODE,
+    CODE_,
     VDECL,
     ASSIGN,
     RHS,
     EXPR,
+    EXPR_,
+    EXPR__,
     FDECL,
     ARG,
     MOREARGS,
