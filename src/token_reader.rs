@@ -2,6 +2,7 @@ use std::collections::VecDeque;
 
 #[derive(Debug, Clone, Copy)]
 pub enum Token {
+    // terminals
     Vtype,      // for the types of variables and function
     Num,        // for signed integers
     Character,  // for a single character
@@ -23,6 +24,23 @@ pub enum Token {
     Rparen,     // for )
     Lbrace,     // for {
     Rbrace,     // for }
+
+    // non-terminals
+    CODE,
+    VDECL,
+    ASSIGN,
+    RHS,
+    EXPR,
+    FDECL,
+    ARG,
+    MOREARGS,
+    BLOCK,
+    STMT,
+    COND,
+    ELSE,
+    RETURN,
+    CDECL,
+    ODECL,
 }
 
 pub fn read_tokens(contents: &String) -> VecDeque<Token> {
