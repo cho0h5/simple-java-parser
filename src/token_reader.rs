@@ -1,6 +1,5 @@
 use std::collections::VecDeque;
 
-use crate::parser::Node;
 use crate::parser::Node::Terminal;
 use crate::parser::formatting::Tokens;
 
