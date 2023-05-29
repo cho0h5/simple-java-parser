@@ -1,5 +1,8 @@
 use std::collections::VecDeque;
 
+use crate::parser::Node;
+use crate::parser::Node::Terminal;
+
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 pub enum Token {
     // terminals
@@ -49,7 +52,7 @@ pub enum Token {
     ODECL,
 }
 
-pub fn read_tokens(contents: &String) -> VecDeque<Token> {
+pub fn read_tokens(contents: &String) -> VecDeque<Node> {
     let mut tokens = VecDeque::new();
     for word in contents.split_whitespace() {
         let token = match word {
@@ -76,9 +79,9 @@ pub fn read_tokens(contents: &String) -> VecDeque<Token> {
             "rbrace" => Token::Rbrace,
             unknown_token => panic!("unknown token: {}", unknown_token),
         };
-        tokens.push_back(token);
+        tokens.push_back(Terminal(token));
     }
-    tokens.push_back(Token::EOL);
+    tokens.push_back(Terminal(Token::EOL));
 
     tokens
 }
