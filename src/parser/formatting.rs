@@ -25,27 +25,31 @@ pub struct Tree(pub Node);
 
 impl fmt::Display for Tree {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.fmt(f, 0);
+        self.0.fmt(f, 0, true);
         Ok(())
     }
 }
 
 impl Node {
-    fn fmt(&self, f: &mut fmt::Formatter, n: usize) {
+    fn fmt(&self, f: &mut fmt::Formatter, n: usize, isLast: bool) {
         match self {
             Terminal(token) => {
-                for _ in 0..n {
-                    write!(f, "  ");
+                for _ in 0..n-1 {
+                    write!(f, "    ");
                 }
+                write!(f, "{}", if isLast { "└── " } else { "├── " });
                 write!(f, "{:?}\n", token)
             },
             NonTerminal(token, children) => {
-                for _ in 0..n {
-                    write!(f, "  ");
+                if n != 0 {
+                    for _ in 0..n-1 {
+                        write!(f, "    ");
+                    }
+                    write!(f, "{}", if isLast { "└── " } else { "├── " });
                 }
-                write!(f, "{:?}\n", token);
-                for child in children {
-                    child.fmt(f, n + 1);
+                write!(f, "\x1b[36m{:?}\x1b[97m\n", token);
+                for i in 0..children.len() {
+                    children[i].fmt(f, n + 1, i == children.len() - 1);
                 }
                 Ok(())
             }
