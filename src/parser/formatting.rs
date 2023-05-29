@@ -25,6 +25,6 @@ pub struct Tree(pub Node);
 
 impl fmt::Display for Tree {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", 234)
+        write!(f, "{:#?}", self.0)
     }
 }
