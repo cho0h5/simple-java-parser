@@ -25,6 +25,30 @@ pub struct Tree(pub Node);
 
 impl fmt::Display for Tree {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:#?}", self.0)
+        self.0.fmt(f, 0);
+        Ok(())
+    }
+}
+
+impl Node {
+    fn fmt(&self, f: &mut fmt::Formatter, n: usize) {
+        match self {
+            Terminal(token) => {
+                for _ in 0..n {
+                    write!(f, "  ");
+                }
+                write!(f, "{:?}\n", token)
+            },
+            NonTerminal(token, children) => {
+                for _ in 0..n {
+                    write!(f, "  ");
+                }
+                write!(f, "{:?}\n", token);
+                for child in children {
+                    child.fmt(f, n + 1);
+                }
+                Ok(())
+            }
+        };
     }
 }
