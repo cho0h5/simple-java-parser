@@ -25,31 +25,33 @@ pub struct Tree(pub Node);
 
 impl fmt::Display for Tree {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.fmt(f, 0, true);
+        self.0.fmt(f, 0, true, vec![]);
         Ok(())
     }
 }
 
 impl Node {
-    fn fmt(&self, f: &mut fmt::Formatter, n: usize, isLast: bool) {
+    fn fmt(&self, f: &mut fmt::Formatter, n: usize, isLast: bool, bridge: Vec<bool>) {
         match self {
             Terminal(token) => {
-                for _ in 0..n-1 {
-                    write!(f, "    ");
+                for b in &bridge[..bridge.len()-1] {
+                    write!(f, "{}", if *b { "│   " } else { "    " });
                 }
                 write!(f, "{}", if isLast { "└── " } else { "├── " });
                 write!(f, "{:?}\n", token)
             },
             NonTerminal(token, children) => {
                 if n != 0 {
-                    for _ in 0..n-1 {
-                        write!(f, "    ");
+                    for b in &bridge[..bridge.len()-1] {
+                        write!(f, "{}", if *b { "│   " } else { "    " });
                     }
                     write!(f, "{}", if isLast { "└── " } else { "├── " });
                 }
                 write!(f, "\x1b[36m{:?}\x1b[97m\n", token);
                 for i in 0..children.len() {
-                    children[i].fmt(f, n + 1, i == children.len() - 1);
+                    let mut _bridge = bridge.clone();
+                    _bridge.push(i != children.len() - 1);
+                    children[i].fmt(f, n + 1, i == children.len() - 1, _bridge);
                 }
                 Ok(())
             }
