@@ -47,7 +47,7 @@ fn shift_goto(tokens: &mut VecDeque<Token>, stack: &mut Vec<StackItem>, next_sta
     let next_token = tokens.pop_front().unwrap();
     stack.push(StackItem::from(next_state, Some(next_token)));
 
-    println!("[shift/goto] {} {:?}", next_state, next_token);
+    println!("[SHIFT/GOTO] {} {:?}", next_state, next_token);
     println!("stack: {:?}", stack);
     println!("tokens: {:?}\n", tokens);
 }
@@ -58,7 +58,7 @@ fn reduce(tokens: &mut VecDeque<Token>, stack: &mut Vec<StackItem>, reduction: R
 
     tokens.push_front(reduction.left);
 
-    println!("[REDUCE] {:?}", reduction.left);
+    println!("[REDUCE] {:?} {}", reduction.left, reduction.right);
     println!("stack: {:?}", stack);
     println!("tokens: {:?}\n", tokens);
 }
