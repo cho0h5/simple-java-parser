@@ -2,6 +2,7 @@ use std::collections::VecDeque;
 
 use crate::parser::Node;
 use crate::parser::Node::Terminal;
+use crate::parser::formatting::Tokens;
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 pub enum Token {
@@ -52,7 +53,7 @@ pub enum Token {
     ODECL,
 }
 
-pub fn read_tokens(contents: &String) -> VecDeque<Node> {
+pub fn read_tokens(contents: &String) -> Tokens {
     let mut tokens = VecDeque::new();
     for word in contents.split_whitespace() {
         let token = match word {
@@ -83,5 +84,5 @@ pub fn read_tokens(contents: &String) -> VecDeque<Node> {
     }
     tokens.push_back(Terminal(Token::EOL));
 
-    tokens
+    Tokens(tokens)
 }

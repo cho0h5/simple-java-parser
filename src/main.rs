@@ -8,9 +8,9 @@ fn main() {
     let raw_contents = utils::read_file(&filename);
 
     let tokens = token_reader::read_tokens(&raw_contents);
-    println!("Parsed tokens:\n{:?}\n", tokens);
+    println!("Read tokens:\n{}\n", tokens);
 
     let parse_tree = parser::parse(tokens);
-    println!("Parse tree:\n{:#?}", parse_tree);
+    println!("Parse tree:\n{}", parse_tree);
 }
 

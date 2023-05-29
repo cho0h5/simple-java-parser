@@ -1,10 +1,15 @@
 mod parsing_table;
+pub mod formatting;
 
 use std::collections::VecDeque;
 
 use crate::token_reader::Token;
+
 use crate::parser::parsing_table::TableElement::*;
 use crate::parser::parsing_table::Reduction;
+
+use crate::parser::formatting::Tokens;
+use crate::parser::formatting::Tree;
 
 use Node::*;
 
@@ -26,7 +31,8 @@ impl StackItem {
     }
 }
 
-pub fn parse(mut tokens: VecDeque<Node>) -> Node{
+pub fn parse(tokens: Tokens) -> Tree {
+    let mut tokens = tokens.0;
     let parsing_table = parsing_table::get_parsing_table();
     let reduction_table = parsing_table::get_reduction_table();
     let mut stack = vec![StackItem::from(0, None)];
@@ -52,7 +58,7 @@ pub fn parse(mut tokens: VecDeque<Node>) -> Node{
         };
     }
 
-    stack.pop().unwrap().tree.unwrap()
+    Tree(stack.pop().unwrap().tree.unwrap())
 }
 
 fn shift_goto(tokens: &mut VecDeque<Node>, stack: &mut Vec<StackItem>, next_state: usize) {
