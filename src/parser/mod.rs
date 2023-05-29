@@ -5,7 +5,6 @@ use std::collections::VecDeque;
 use crate::token_reader::Token;
 use crate::parser::parsing_table::TableElement::*;
 use crate::parser::parsing_table::Reduction;
-use crate::parser::parsing_table::TableElement;
 
 #[derive(Debug)]
 struct StackItem {
@@ -57,7 +56,6 @@ fn reduce(tokens: &mut VecDeque<Token>, stack: &mut Vec<StackItem>, reduction: R
     let new_len = stack.len() - reduction.right;
     stack.truncate(new_len);
 
-    let current_state = stack.last().unwrap().state;
     tokens.push_front(reduction.left);
 
     println!("[REDUCE] {:?}", reduction.left);

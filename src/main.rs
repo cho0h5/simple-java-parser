@@ -7,7 +7,7 @@ fn main() {
 
     let raw_contents = utils::read_file(&filename);
 
-    let mut tokens = token_reader::read_tokens(&raw_contents);
+    let tokens = token_reader::read_tokens(&raw_contents);
     println!("Parsed tokens: {:?}\n", tokens);
 
     parser::parse(tokens);
