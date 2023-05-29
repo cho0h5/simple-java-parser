@@ -7,13 +7,19 @@ use crate::parser::parsing_table::TableElement::*;
 use crate::parser::parsing_table::Reduction;
 
 #[derive(Debug)]
+pub enum Node {
+    Terminal(Token),
+    NonTerminal(Token, Vec<Node>),
+}
+
+#[derive(Debug)]
 struct StackItem {
     state: usize,
     token: Option<Token>,
 }
 
 impl StackItem {
-    fn from(state: usize, token: Option<Token>) -> StackItem {
+    fn from(state: usize, token: Option<Token>) -> Self {
         StackItem { state: state, token: token }
     }
 }

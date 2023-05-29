@@ -740,49 +740,49 @@ mod tests {
     }
 
     #[test]
-    fn check_action_and_goto_for_0_Vtype() {
+    fn check_action_and_goto_for_0_vtype() {
         let table = get_parsing_table();
         assert_eq!(table[0][&Vtype], Shift(5));
     }
 
     #[test]
-    fn check_action_and_goto_for_1_EOL() {
+    fn check_action_and_goto_for_1_eol() {
         let table = get_parsing_table();
         assert_eq!(table[1][&EOL], Accepted);
     }
 
     #[test]
-    fn check_action_and_goto_for_4_CODE() {
+    fn check_action_and_goto_for_4_code() {
         let table = get_parsing_table();
         assert_eq!(table[4][&CODE], Goto(9));
     }
 
     #[test]
-    fn check_action_and_goto_for_15_EXPR__() {
+    fn check_action_and_goto_for_15_expr__() {
         let table = get_parsing_table();
         assert_eq!(table[15][&EXPR__], Goto(26));
     }
 
     #[test]
-    fn check_action_and_goto_for_32_Rbrace() {
+    fn check_action_and_goto_for_32_rbrace() {
         let table = get_parsing_table();
         assert_eq!(table[32][&Rbrace], Reduce(38));
     }
 
     #[test]
-    fn check_action_and_goto_for_41_Id() {
+    fn check_action_and_goto_for_41_id() {
         let table = get_parsing_table();
         assert_eq!(table[41][&Id], Shift(54));
     }
 
     #[test]
-    fn check_action_and_goto_for_46_Rparen() {
+    fn check_action_and_goto_for_46_rparen() {
         let table = get_parsing_table();
         assert_eq!(table[46][&Rparen], Reduce(16));
     }
 
     #[test]
-    fn check_action_and_goto_for_85_While() {
+    fn check_action_and_goto_for_85_while() {
         let table = get_parsing_table();
         assert_eq!(table[85][&While], Reduce(32));
     }
