@@ -4,6 +4,7 @@ mod utils;
 
 fn main() {
     let filename = utils::get_filename();
+    println!("File name: {}\n", filename);
 
     let raw_contents = utils::read_file(&filename);
 
