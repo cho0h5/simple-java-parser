@@ -3,6 +3,8 @@ use std::collections::VecDeque;
 use crate::parser::Node::Terminal;
 use crate::parser::formatting::Tokens;
 
+pub struct UnknownTokenError<'a>(pub &'a str);
+
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 pub enum Token {
     // terminals
@@ -52,7 +54,7 @@ pub enum Token {
     ODECL,
 }
 
-pub fn read_tokens(contents: &String) -> Tokens {
+pub fn read_tokens(contents: &String) -> Result<Tokens, UnknownTokenError> {
     let mut tokens = VecDeque::new();
     for word in contents.split_whitespace() {
         let token = match word {
@@ -77,11 +79,11 @@ pub fn read_tokens(contents: &String) -> Tokens {
             "rparen" => Token::Rparen,
             "lbrace" => Token::Lbrace,
             "rbrace" => Token::Rbrace,
-            unknown_token => panic!("unknown token: {}", unknown_token),
+            unknown_token => return Err(UnknownTokenError(unknown_token)),
         };
         tokens.push_back(Terminal(token));
     }
     tokens.push_back(Terminal(Token::EOL));
 
-    Tokens(tokens)
+    Ok(Tokens(tokens))
 }
