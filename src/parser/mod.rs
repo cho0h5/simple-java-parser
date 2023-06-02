@@ -44,11 +44,9 @@ pub fn parse(tokens: Tokens) -> Tree {
             NonTerminal(token, _) => token,
         };
 
-        // println!("[target] {} {:?}", current_state, next_token);
         if !parsing_table[current_state].contains_key(&next_token) {
             unimplemented!();
         }
-        // println!("[try] {:?}", parsing_table[current_state][&next_token]);
 
         match parsing_table[current_state][&next_token] {
             Shift(next_state) => shift_goto(&mut tokens, &mut stack, next_state),
@@ -64,10 +62,6 @@ pub fn parse(tokens: Tokens) -> Tree {
 fn shift_goto(tokens: &mut VecDeque<Node>, stack: &mut Vec<StackItem>, next_state: usize) {
     let next_token = tokens.pop_front().unwrap();
     stack.push(StackItem::from(next_state, Some(next_token)));
-
-    // println!("[SHIFT/GOTO] {}", next_state);
-    // println!("stack: {:?}", stack);
-    // println!("tokens: {:?}\n", tokens);
 }
 
 fn reduce(tokens: &mut VecDeque<Node>, stack: &mut Vec<StackItem>, reduction: Reduction) {
@@ -78,8 +72,4 @@ fn reduce(tokens: &mut VecDeque<Node>, stack: &mut Vec<StackItem>, reduction: Re
     children.reverse();
 
     tokens.push_front(NonTerminal(reduction.left, children));
-
-    // println!("[REDUCE] {:?} {}", reduction.left, reduction.right);
-    // println!("stack: {:?}", stack);
-    // println!("tokens: {:?}\n", tokens);
 }
