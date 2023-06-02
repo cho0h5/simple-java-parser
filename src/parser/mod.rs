@@ -13,6 +13,8 @@ use crate::parser::formatting::Tree;
 
 use Node::*;
 
+pub struct ParsingError(pub Vec<Token>, pub Token);
+
 #[derive(Debug)]
 pub enum Node {
     Terminal(Token),
@@ -31,7 +33,7 @@ impl StackItem {
     }
 }
 
-pub fn parse(tokens: Tokens) -> Tree {
+pub fn parse(tokens: Tokens) -> Result<Tree, ParsingError> {
     let mut tokens = tokens.0;
     let parsing_table = parsing_table::get_parsing_table();
     let reduction_table = parsing_table::get_reduction_table();
@@ -44,19 +46,20 @@ pub fn parse(tokens: Tokens) -> Tree {
             NonTerminal(token, _) => token,
         };
 
-        if !parsing_table[current_state].contains_key(&next_token) {
-            unimplemented!();
-        }
-
-        match parsing_table[current_state][&next_token] {
-            Shift(next_state) => shift_goto(&mut tokens, &mut stack, next_state),
-            Reduce(reduction_index) => reduce(&mut tokens, &mut stack, reduction_table[reduction_index]),
-            Goto(next_state) => shift_goto(&mut tokens, &mut stack, next_state),
-            Accepted => break,
+        match parsing_table[current_state].get(&next_token) {
+            Some(behavior) => match behavior{
+                Shift(next_state) => shift_goto(&mut tokens, &mut stack, *next_state),
+                Reduce(reduction_index) => reduce(&mut tokens, &mut stack, reduction_table[*reduction_index]),
+                Goto(next_state) => shift_goto(&mut tokens, &mut stack, *next_state),
+                Accepted => break,
+            },
+            None => {
+                return Err(ParsingError(parsing_table[current_state].keys().cloned().collect(), next_token));
+            },
         };
     }
 
-    Tree(stack.pop().unwrap().tree.unwrap())
+    Ok(Tree(stack.pop().unwrap().tree.unwrap()))
 }
 
 fn shift_goto(tokens: &mut VecDeque<Node>, stack: &mut Vec<StackItem>, next_state: usize) {

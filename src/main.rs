@@ -6,6 +6,7 @@ use std::env;
 use std::fs;
 
 use token_reader::UnknownTokenError;
+use parser::ParsingError;
 
 fn main() {
     let filename = match env::args().nth(1) {
@@ -34,7 +35,15 @@ fn main() {
     };
     println!("Read tokens:\n{}\n", tokens);
 
-    let parse_tree = parser::parse(tokens);
+    let parse_tree = match parser::parse(tokens) {
+        Ok(tree) => tree,
+        Err(ParsingError(expected, found)) => {
+            println!("\x1b[31merror\x1b[37m: parsing error");
+            println!("\texpected: {:?}", expected);
+            println!("\tbut found: {:?}", found);
+            process::exit(1);
+        },
+    };
     println!("Parse tree:\n{}", parse_tree);
 }
 
