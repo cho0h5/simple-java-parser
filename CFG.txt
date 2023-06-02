@@ -10,9 +10,9 @@ RHS -> EXPR
 RHS -> literal
 RHS -> character
 RHS -> boolstr
-EXPR -> EXPR' addsub EXPR
+EXPR -> EXPR addsub EXPR'
 EXPR -> EXPR'
-EXPR' -> EXPR'' multdiv EXPR'
+EXPR' -> EXPR' multdiv EXPR''
 EXPR' -> EXPR''
 EXPR'' -> lparen EXPR rparen
 EXPR'' -> id
