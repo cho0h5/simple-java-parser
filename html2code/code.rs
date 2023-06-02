@@ -163,6 +163,7 @@
     // for state 21
     let mut hashmap = HashMap::new();
     hashmap.insert(Semi, Reduce(8));
+    hashmap.insert(Addsub, Shift(35));
     table.push(hashmap);
 
     // for state 22
@@ -183,7 +184,8 @@
     // for state 25
     let mut hashmap = HashMap::new();
     hashmap.insert(Semi, Reduce(13));
-    hashmap.insert(Addsub, Shift(35));
+    hashmap.insert(Addsub, Reduce(13));
+    hashmap.insert(Multdiv, Shift(36));
     hashmap.insert(Rparen, Reduce(13));
     table.push(hashmap);
 
@@ -191,7 +193,7 @@
     let mut hashmap = HashMap::new();
     hashmap.insert(Semi, Reduce(15));
     hashmap.insert(Addsub, Reduce(15));
-    hashmap.insert(Multdiv, Shift(36));
+    hashmap.insert(Multdiv, Reduce(15));
     hashmap.insert(Rparen, Reduce(15));
     table.push(hashmap);
 
@@ -261,8 +263,7 @@
     hashmap.insert(Id, Shift(28));
     hashmap.insert(Lparen, Shift(27));
     hashmap.insert(Num, Shift(29));
-    hashmap.insert(EXPR, Goto(44));
-    hashmap.insert(EXPR_, Goto(25));
+    hashmap.insert(EXPR_, Goto(44));
     hashmap.insert(EXPR__, Goto(26));
     table.push(hashmap);
 
@@ -271,12 +272,12 @@
     hashmap.insert(Id, Shift(28));
     hashmap.insert(Lparen, Shift(27));
     hashmap.insert(Num, Shift(29));
-    hashmap.insert(EXPR_, Goto(45));
-    hashmap.insert(EXPR__, Goto(26));
+    hashmap.insert(EXPR__, Goto(45));
     table.push(hashmap);
 
     // for state 37
     let mut hashmap = HashMap::new();
+    hashmap.insert(Addsub, Shift(35));
     hashmap.insert(Rparen, Shift(46));
     table.push(hashmap);
 
@@ -324,6 +325,8 @@
     // for state 44
     let mut hashmap = HashMap::new();
     hashmap.insert(Semi, Reduce(12));
+    hashmap.insert(Addsub, Reduce(12));
+    hashmap.insert(Multdiv, Shift(36));
     hashmap.insert(Rparen, Reduce(12));
     table.push(hashmap);
 
@@ -331,6 +334,7 @@
     let mut hashmap = HashMap::new();
     hashmap.insert(Semi, Reduce(14));
     hashmap.insert(Addsub, Reduce(14));
+    hashmap.insert(Multdiv, Reduce(14));
     hashmap.insert(Rparen, Reduce(14));
     table.push(hashmap);
 
