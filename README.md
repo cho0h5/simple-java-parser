@@ -84,22 +84,98 @@ $ ./syntax_analyzer testcase/sample_input0.sj
 
 ## test case
 ### case 0
-In testcase/sample_input0.sj
 ```
+// In testcase/sample_input0.sj
 vtype id semi
 ```
-### case 1
-In testcase/sample_input1.sj
+```bash
+$ ./syntax_analyzer testcase/sample_input0.sj
+[1/4] File name: testcase/sample_input0.sj
+
+[2/4] File contents:
+vtype id semi
+
+[3/4] Read tokens:
+[Vtype Id Semi EOL]
+
+[4/4] Parse tree:
+CODE
+├── VDECL
+│   ├── Vtype
+│   ├── Id
+│   └── Semi
+└── CODE
+
+Accepted!
 ```
+### case 1
+```
+// In testcase/sample_input1.sj
 vtype id semi
 vtype id lparen rparen lbrace
     if lparen boolstr comp boolstr rparen lbrace
     rbrace
 return id semi rbrace
 ```
-### case 2
-In testcase/sample_input2.sj
+```bash
+$ ./syntax_analyzer testcase/sample_input1.sj
+[1/4] File name: testcase/sample_input1.sj
+
+[2/4] File contents:
+vtype id semi
+vtype id lparen rparen lbrace
+    if lparen boolstr comp boolstr rparen lbrace
+    rbrace
+return id semi rbrace
+
+[3/4] Read tokens:
+[Vtype Id Semi Vtype Id Lparen Rparen Lbrace If Lparen Boolstr Comp Boolstr Rparen Lbrace Rbrace Return Id Semi Rbrace EOL]
+
+[4/4] Parse tree:
+CODE
+├── VDECL
+│   ├── Vtype
+│   ├── Id
+│   └── Semi
+└── CODE
+    ├── FDECL
+    │   ├── Vtype
+    │   ├── Id
+    │   ├── Lparen
+    │   ├── ARG
+    │   ├── Rparen
+    │   ├── Lbrace
+    │   ├── BLOCK
+    │   │   ├── STMT
+    │   │   │   ├── If
+    │   │   │   ├── Lparen
+    │   │   │   ├── COND
+    │   │   │   │   ├── COND
+    │   │   │   │   │   └── Boolstr
+    │   │   │   │   ├── Comp
+    │   │   │   │   └── Boolstr
+    │   │   │   ├── Rparen
+    │   │   │   ├── Lbrace
+    │   │   │   ├── BLOCK
+    │   │   │   ├── Rbrace
+    │   │   │   └── ELSE
+    │   │   └── BLOCK
+    │   ├── RETURN
+    │   │   ├── Return
+    │   │   ├── RHS
+    │   │   │   └── EXPR
+    │   │   │       └── EXPR_
+    │   │   │           └── EXPR__
+    │   │   │               └── Id
+    │   │   └── Semi
+    │   └── Rbrace
+    └── CODE
+
+Accepted!
 ```
+### case 2
+```
+// In testcase/sample_input2.sj
 class id lbrace
     vtype id semi
     vtype id assign id addsub lparen num multdiv id rparen semi
@@ -121,47 +197,415 @@ class id lbrace
 
 rbrace
 ```
-### case 3
-In testcase/sample_input3.sj
+```bash
+$ ./syntax_analyzer testcase/sample_input2.sj
+[1/4] File name: testcase/sample_input2.sj
+
+[2/4] File contents:
+class id lbrace
+    vtype id semi
+    vtype id assign id addsub lparen num multdiv id rparen semi
+
+    vtype id lparen rparen lbrace
+        id assign num multdiv num semi
+        while lparen boolstr comp boolstr comp boolstr rparen lbrace
+            id assign literal semi
+            id assign boolstr semi
+        rbrace
+        return id semi
+    rbrace
+
+    vtype id lparen vtype id comma vtype id rparen lbrace
+        if lparen boolstr rparen lbrace
+        rbrace
+        return num addsub id semi
+    rbrace
+
+rbrace
+
+[3/4] Read tokens:
+[Class Id Lbrace Vtype Id Semi Vtype Id Assign Id Addsub Lparen Num Multdiv Id Rparen Semi Vtype Id Lparen Rparen Lbrace Id Assign Num Multdiv Num Semi While Lparen Boolstr Comp Boolstr Comp Boolstr Rparen Lbrace Id Assign Literal Semi Id Assign Boolstr Semi Rbrace Return Id Semi Rbrace Vtype Id Lparen Vtype Id Comma Vtype Id Rparen Lbrace If Lparen Boolstr Rparen Lbrace Rbrace Return Num Addsub Id Semi Rbrace Rbrace EOL]
+
+[4/4] Parse tree:
+CODE
+├── CDECL
+│   ├── Class
+│   ├── Id
+│   ├── Lbrace
+│   ├── ODECL
+│   │   ├── VDECL
+│   │   │   ├── Vtype
+│   │   │   ├── Id
+│   │   │   └── Semi
+│   │   └── ODECL
+│   │       ├── VDECL
+│   │       │   ├── Vtype
+│   │       │   ├── ASSIGN
+│   │       │   │   ├── Id
+│   │       │   │   ├── Assign
+│   │       │   │   └── RHS
+│   │       │   │       └── EXPR
+│   │       │   │           ├── EXPR
+│   │       │   │           │   └── EXPR_
+│   │       │   │           │       └── EXPR__
+│   │       │   │           │           └── Id
+│   │       │   │           ├── Addsub
+│   │       │   │           └── EXPR_
+│   │       │   │               └── EXPR__
+│   │       │   │                   ├── Lparen
+│   │       │   │                   ├── EXPR
+│   │       │   │                   │   └── EXPR_
+│   │       │   │                   │       ├── EXPR_
+│   │       │   │                   │       │   └── EXPR__
+│   │       │   │                   │       │       └── Num
+│   │       │   │                   │       ├── Multdiv
+│   │       │   │                   │       └── EXPR__
+│   │       │   │                   │           └── Id
+│   │       │   │                   └── Rparen
+│   │       │   └── Semi
+│   │       └── ODECL
+│   │           ├── FDECL
+│   │           │   ├── Vtype
+│   │           │   ├── Id
+│   │           │   ├── Lparen
+│   │           │   ├── ARG
+│   │           │   ├── Rparen
+│   │           │   ├── Lbrace
+│   │           │   ├── BLOCK
+│   │           │   │   ├── STMT
+│   │           │   │   │   ├── ASSIGN
+│   │           │   │   │   │   ├── Id
+│   │           │   │   │   │   ├── Assign
+│   │           │   │   │   │   └── RHS
+│   │           │   │   │   │       └── EXPR
+│   │           │   │   │   │           └── EXPR_
+│   │           │   │   │   │               ├── EXPR_
+│   │           │   │   │   │               │   └── EXPR__
+│   │           │   │   │   │               │       └── Num
+│   │           │   │   │   │               ├── Multdiv
+│   │           │   │   │   │               └── EXPR__
+│   │           │   │   │   │                   └── Num
+│   │           │   │   │   └── Semi
+│   │           │   │   └── BLOCK
+│   │           │   │       ├── STMT
+│   │           │   │       │   ├── While
+│   │           │   │       │   ├── Lparen
+│   │           │   │       │   ├── COND
+│   │           │   │       │   │   ├── COND
+│   │           │   │       │   │   │   ├── COND
+│   │           │   │       │   │   │   │   └── Boolstr
+│   │           │   │       │   │   │   ├── Comp
+│   │           │   │       │   │   │   └── Boolstr
+│   │           │   │       │   │   ├── Comp
+│   │           │   │       │   │   └── Boolstr
+│   │           │   │       │   ├── Rparen
+│   │           │   │       │   ├── Lbrace
+│   │           │   │       │   ├── BLOCK
+│   │           │   │       │   │   ├── STMT
+│   │           │   │       │   │   │   ├── ASSIGN
+│   │           │   │       │   │   │   │   ├── Id
+│   │           │   │       │   │   │   │   ├── Assign
+│   │           │   │       │   │   │   │   └── RHS
+│   │           │   │       │   │   │   │       └── Literal
+│   │           │   │       │   │   │   └── Semi
+│   │           │   │       │   │   └── BLOCK
+│   │           │   │       │   │       ├── STMT
+│   │           │   │       │   │       │   ├── ASSIGN
+│   │           │   │       │   │       │   │   ├── Id
+│   │           │   │       │   │       │   │   ├── Assign
+│   │           │   │       │   │       │   │   └── RHS
+│   │           │   │       │   │       │   │       └── Boolstr
+│   │           │   │       │   │       │   └── Semi
+│   │           │   │       │   │       └── BLOCK
+│   │           │   │       │   └── Rbrace
+│   │           │   │       └── BLOCK
+│   │           │   ├── RETURN
+│   │           │   │   ├── Return
+│   │           │   │   ├── RHS
+│   │           │   │   │   └── EXPR
+│   │           │   │   │       └── EXPR_
+│   │           │   │   │           └── EXPR__
+│   │           │   │   │               └── Id
+│   │           │   │   └── Semi
+│   │           │   └── Rbrace
+│   │           └── ODECL
+│   │               ├── FDECL
+│   │               │   ├── Vtype
+│   │               │   ├── Id
+│   │               │   ├── Lparen
+│   │               │   ├── ARG
+│   │               │   │   ├── Vtype
+│   │               │   │   ├── Id
+│   │               │   │   └── MOREARGS
+│   │               │   │       ├── Comma
+│   │               │   │       ├── Vtype
+│   │               │   │       ├── Id
+│   │               │   │       └── MOREARGS
+│   │               │   ├── Rparen
+│   │               │   ├── Lbrace
+│   │               │   ├── BLOCK
+│   │               │   │   ├── STMT
+│   │               │   │   │   ├── If
+│   │               │   │   │   ├── Lparen
+│   │               │   │   │   ├── COND
+│   │               │   │   │   │   └── Boolstr
+│   │               │   │   │   ├── Rparen
+│   │               │   │   │   ├── Lbrace
+│   │               │   │   │   ├── BLOCK
+│   │               │   │   │   ├── Rbrace
+│   │               │   │   │   └── ELSE
+│   │               │   │   └── BLOCK
+│   │               │   ├── RETURN
+│   │               │   │   ├── Return
+│   │               │   │   ├── RHS
+│   │               │   │   │   └── EXPR
+│   │               │   │   │       ├── EXPR
+│   │               │   │   │       │   └── EXPR_
+│   │               │   │   │       │       └── EXPR__
+│   │               │   │   │       │           └── Num
+│   │               │   │   │       ├── Addsub
+│   │               │   │   │       └── EXPR_
+│   │               │   │   │           └── EXPR__
+│   │               │   │   │               └── Id
+│   │               │   │   └── Semi
+│   │               │   └── Rbrace
+│   │               └── ODECL
+│   └── Rbrace
+└── CODE
+
+Accepted!
 ```
+### case 3
+```
+// In testcase/sample_input3.sj
 vtype id lparen rparen lbrace
     id assign id addsub id multdiv id addsub id multdiv id semi
 
     return id semi
 rbrace
 ```
-### case 4
-In testcase/sample_input4.sj
+```bash
+$ ./syntax_analyzer testcase/sample_input3.sj
+[1/4] File name: testcase/sample_input3.sj
+
+[2/4] File contents:
+vtype id lparen rparen lbrace
+    id assign id addsub id multdiv id addsub id multdiv id semi
+
+    return id semi
+rbrace
+
+[3/4] Read tokens:
+[Vtype Id Lparen Rparen Lbrace Id Assign Id Addsub Id Multdiv Id Addsub Id Multdiv Id Semi Return Id Semi Rbrace EOL]
+
+[4/4] Parse tree:
+CODE
+├── FDECL
+│   ├── Vtype
+│   ├── Id
+│   ├── Lparen
+│   ├── ARG
+│   ├── Rparen
+│   ├── Lbrace
+│   ├── BLOCK
+│   │   ├── STMT
+│   │   │   ├── ASSIGN
+│   │   │   │   ├── Id
+│   │   │   │   ├── Assign
+│   │   │   │   └── RHS
+│   │   │   │       └── EXPR
+│   │   │   │           ├── EXPR
+│   │   │   │           │   ├── EXPR
+│   │   │   │           │   │   └── EXPR_
+│   │   │   │           │   │       └── EXPR__
+│   │   │   │           │   │           └── Id
+│   │   │   │           │   ├── Addsub
+│   │   │   │           │   └── EXPR_
+│   │   │   │           │       ├── EXPR_
+│   │   │   │           │       │   └── EXPR__
+│   │   │   │           │       │       └── Id
+│   │   │   │           │       ├── Multdiv
+│   │   │   │           │       └── EXPR__
+│   │   │   │           │           └── Id
+│   │   │   │           ├── Addsub
+│   │   │   │           └── EXPR_
+│   │   │   │               ├── EXPR_
+│   │   │   │               │   └── EXPR__
+│   │   │   │               │       └── Id
+│   │   │   │               ├── Multdiv
+│   │   │   │               └── EXPR__
+│   │   │   │                   └── Id
+│   │   │   └── Semi
+│   │   └── BLOCK
+│   ├── RETURN
+│   │   ├── Return
+│   │   ├── RHS
+│   │   │   └── EXPR
+│   │   │       └── EXPR_
+│   │   │           └── EXPR__
+│   │   │               └── Id
+│   │   └── Semi
+│   └── Rbrace
+└── CODE
+
+Accepted!
 ```
+### case 4
+```
+// In testcase/sample_input4.sj
 vtype id lparen rparen lbrace
     id assign id multdiv id multdiv id addsub id multdiv id semi
 
     return id semi
 rbrace
 ```
-### fail case 0
-In testcase/sample_fail_input0.sj
+```bash
+$ ./syntax_analyzer testcase/sample_input4.sj
+[1/4] File name: testcase/sample_input4.sj
+
+[2/4] File contents:
+vtype id lparen rparen lbrace
+    id assign id multdiv id multdiv id addsub id multdiv id semi
+
+    return id semi
+rbrace
+
+[3/4] Read tokens:
+[Vtype Id Lparen Rparen Lbrace Id Assign Id Multdiv Id Multdiv Id Addsub Id Multdiv Id Semi Return Id Semi Rbrace EOL]
+
+[4/4] Parse tree:
+CODE
+├── FDECL
+│   ├── Vtype
+│   ├── Id
+│   ├── Lparen
+│   ├── ARG
+│   ├── Rparen
+│   ├── Lbrace
+│   ├── BLOCK
+│   │   ├── STMT
+│   │   │   ├── ASSIGN
+│   │   │   │   ├── Id
+│   │   │   │   ├── Assign
+│   │   │   │   └── RHS
+│   │   │   │       └── EXPR
+│   │   │   │           ├── EXPR
+│   │   │   │           │   └── EXPR_
+│   │   │   │           │       ├── EXPR_
+│   │   │   │           │       │   ├── EXPR_
+│   │   │   │           │       │   │   └── EXPR__
+│   │   │   │           │       │   │       └── Id
+│   │   │   │           │       │   ├── Multdiv
+│   │   │   │           │       │   └── EXPR__
+│   │   │   │           │       │       └── Id
+│   │   │   │           │       ├── Multdiv
+│   │   │   │           │       └── EXPR__
+│   │   │   │           │           └── Id
+│   │   │   │           ├── Addsub
+│   │   │   │           └── EXPR_
+│   │   │   │               ├── EXPR_
+│   │   │   │               │   └── EXPR__
+│   │   │   │               │       └── Id
+│   │   │   │               ├── Multdiv
+│   │   │   │               └── EXPR__
+│   │   │   │                   └── Id
+│   │   │   └── Semi
+│   │   └── BLOCK
+│   ├── RETURN
+│   │   ├── Return
+│   │   ├── RHS
+│   │   │   └── EXPR
+│   │   │       └── EXPR_
+│   │   │           └── EXPR__
+│   │   │               └── Id
+│   │   └── Semi
+│   └── Rbrace
+└── CODE
+
+Accepted!
 ```
+### fail case 0
+```
+// In testcase/sample_fail_input0.sj
 CODE
 ```
-### fail case 1
-In testcase/sample_fail_input1.sj
+```bash
+$ ./syntax_analyzer testcase/sample_fail_input0.sj
+[1/4] File name: testcase/sample_fail_input0.sj
+
+[2/4] File contents:
+CODE
+
+[3/4] error: unknown token: CODE
 ```
+### fail case 1
+```
+// In testcase/sample_fail_input1.sj
 vtype id semi vtype id lparen rparen lbrace if lparen boolstr comp boolstr rparen lbrace rbrace
 ```
-### fail case 2
-In testcase/sample_fail_input2.sj
+```bash
+$ ./syntax_analyzer testcase/sample_fail_input1.sj
+[1/4] File name: testcase/sample_fail_input1.sj
+
+[2/4] File contents:
+vtype id semi vtype id lparen rparen lbrace if lparen boolstr comp boolstr rparen lbrace rbrace
+
+[3/4] Read tokens:
+[Vtype Id Semi Vtype Id Lparen Rparen Lbrace If Lparen Boolstr Comp Boolstr Rparen Lbrace Rbrace EOL]
+
+[4/4] error: parsing error
+	expected: [ELSE, Vtype, Else, If, Id, While, Return, Rbrace]
+	but found: EOL
 ```
+### fail case 2
+```
+// In testcase/sample_fail_input2.sj
 vtype id semi vtype id lparen rparen lbrace if lparen boolstr comp boolstr rparen lbrace return id semi rbrace
 ```
-### fail case 3
-In testcase/sample_fail_input3.sj
+```bash
+$ ./syntax_analyzer testcase/sample_fail_input2.sj
+[1/4] File name: testcase/sample_fail_input2.sj
+
+[2/4] File contents:
+vtype id semi vtype id lparen rparen lbrace if lparen boolstr comp boolstr rparen lbrace return id semi rbrace
+
+[3/4] Read tokens:
+[Vtype Id Semi Vtype Id Lparen Rparen Lbrace If Lparen Boolstr Comp Boolstr Rparen Lbrace Return Id Semi Rbrace EOL]
+
+[4/4] error: parsing error
+	expected: [Rbrace]
+	but found: Return
 ```
+### fail case 3
+```
+// In testcase/sample_fail_input3.sj
 vtype id lparen rpalren lbrace
     return id semi
 rbrace
 ```
+```bash
+$ ./syntax_analyzer testcase/sample_fail_input3.sj
+[1/4] File name: testcase/sample_fail_input3.sj
+
+[2/4] File contents:
+vtype id lparen rpalren lbrace
+    return id semi
+rbrace
+
+[3/4] error: unknown token: rpalren
+```
 ### fail case 4
 no input
+```bash
+$ ./syntax_analyzer
+[1/4] error: no input file
+```
 ### fail case 5
 fail to read file
+
+```bash
+$ ./syntax_analyzer awkjnviwunalwdj
+[1/4] File name: awkjnviwunalwdj
+
+[2/4] error: something went wrong during reading file
+```
