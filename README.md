@@ -139,20 +139,24 @@ Step 4. 인식된 토큰을 parsing하여 parsing tree 생성하기
 fn main() {
     // 1. 입력받은 파일 이름이 있다면 filename에 저장합니다.
     let filename = match env::args().nth(1) {
+        (생략...)
     };
 
     // 2. 파일 읽기에 성공하면 raw_contents에 저장합니다.
     let raw_contents = match fs::read_to_string(filename) {
+        (생략...)
     };
 
     // 3. token을 인식하는데 성공하면 tokens의 배열을 tokens에 저장합니다.
     //    token_reader::reader_token(...) 함수는 src/token_reader.rs 에 작성되어 있습니다.
     let tokens = match token_reader::read_tokens(&raw_contents) {
+        (생략...)
     };
 
     // 4. 입력된 tokens를 parsing하고 parse tree를 생성한 후 출력합니다.
     //    parser::parse(...) 함수는 src/parser/mod.rs 에 작성되어 있습니다.
     match parser::parse(tokens) {
+        (생략...)
     };
 }
 ```
