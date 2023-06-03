@@ -9,24 +9,8 @@ team_id: 67
 ## 실행
 ```bash
 $ ./syntax_analyzer testcase/sample_input0.sj
-[1/4] File name: testcase/sample_input0.sj
-
-[2/4] File contents:
-vtype id semi
-
-[3/4] Read tokens:
-[Vtype Id Semi EOL]
-
-[4/4] Parse tree:
-CODE
-├── VDECL
-│   ├── Vtype
-│   ├── Id
-│   └── Semi
-└── CODE
-
-Accepted!
 ```
+![example](img/example.png)
 ## build
 ```bash
 # rust 설치 (https://www.rust-lang.org/learn/get-started)
