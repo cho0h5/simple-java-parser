@@ -195,6 +195,99 @@ Node의 배열을 나타내는 struct입니다.
 pub struct Tokens(pub VecDeque<Node>);
 ```
 ### Step 4 주요 struct, enum, procedure
+#### parse (In src/parser/mod.rs)
+parsing table과 reduction table을 참조하여 parsing하며 tree를 생성하는 함수입니다.  
+parsing table에 해당하는 rule(shift, reduce, goto, accepted)이 있다면 그것을 실행하고,  
+없다면 ParsingError를 return합니다.
+```rust
+pub fn parse(tokens: Tokens) -> Result<Tree, ParsingError> {
+    let mut tokens = tokens.0;
+
+    // parsing_table::get_parsing_table()은 src/parser/parsing_table.rs에 정의되어 있습니다.
+    // hard coding된 parsing table을 return하는 함수입니다.
+    let parsing_table = parsing_table::get_parsing_table();
+
+    // parsing_table::get_reduction_table()은 reduction을 할 때 필요한 CFG를  return하는
+    // 함수이며 나머지는 parsing_table::get_parsing_table() 함수와 같습니다.
+    let reduction_table = parsing_table::get_reduction_table();
+
+    // stack을 생성한 후 state 0을 넣습니다.
+    let mut stack = vec![StackItem::from(0, None)];
+
+    loop {
+        // parsing table을 검색하기 위해 현재 state와 next token 정보를 가져옵니다.
+        let current_state = stack.last().unwrap().state;
+        let next_token = match tokens[0] {
+            Terminal(token) => token,
+            NonTerminal(token, _) => token,
+        };
+
+        // parsing_table에 현재 state와 next token에 맞는 rule이 있다면
+        // 해당 rule을 처리합니다.
+        match parsing_table[current_state].get(&next_token) {
+            Some(behavior) => match behavior{
+                // 찾아진 rule에 따라 parsing을 진행합니다.
+                // shift와 goto를 하나의 함수로 구현하여 구현을 단순화 하였습니다.
+                // Shift, Reduce, Goto, Accepted 는 src/parser/parsing_table.rs에 TableElement로
+                // 정의되어 있으며, parsing table의 rule을 나타냅니다.
+                Shift(next_state) => shift_goto(&mut tokens, &mut stack, *next_state),
+                Reduce(reduction_index) => reduce(&mut tokens, &mut stack, reduction_table[*reduction_index]),
+                Goto(next_state) => shift_goto(&mut tokens, &mut stack, *next_state),
+                Accepted => break,
+            },
+            None => {
+                // 현재 state와 next token에 맞는 rule이 없다면 부가 정보를 담은 Error를
+                // return합니다.
+                return Err(ParsingError(parsing_table[current_state].keys().cloned().collect(), next_token));
+            },
+        };
+    }
+
+    // parsing이 완료되면 stack의 최상단에 저장된 node를 Tree로 wrapping하여 return합니다.
+    Ok(Tree(stack.pop().unwrap().tree.unwrap()))
+}
+```
+#### shift_goto (In src/parser/mod.rs)
+shift와 goto를 실행하는 함수입니다.
+```rust
+fn shift_goto(tokens: &mut VecDeque<Node>, stack: &mut Vec<StackItem>, next_state: usize) {
+    // tokens에서 token을 pop하여
+    let next_token = tokens.pop_front().unwrap();
+    // next state와 함께 stack에 push합니다.
+    stack.push(StackItem::from(next_state, Some(next_token)));
+}
+```
+#### reduce (In src/parser/mod.rs)
+reduce를 실행하는 함수입니다.
+```rust
+fn reduce(tokens: &mut VecDeque<Node>, stack: &mut Vec<StackItem>, reduction: Reduction) {
+    // 해당 reduction rule에 맞는 수 만큼 stack에서 pop하여
+    // children으로 push합니다.
+    let mut children: Vec<Node> = vec![];
+    for _ in 0..reduction.right {
+        children.push(stack.pop().unwrap().tree.unwrap());
+    }
+    children.reverse();
+
+    // children과 함께 non-terminal(reduction.left)을 tokens에 push합니다.
+    // 이렇게 push된 non-terminal은 shift와 goto가 함께 구현된 shift_goto를 거쳐
+    // 알맞게 stack으로 다시 push됩니다.
+    tokens.push_front(NonTerminal(reduction.left, children));
+}
+```
+#### StackItem (In src/parser/mod.rs)
+stack에 state뿐만 아니라 parsing중인 node를 함께 저장합니다.
+```rust
+struct StackItem {
+    state: usize,
+    tree: Option<Node>,
+}
+```
+#### Tree (In src/parser/formatting.rs)
+Node를 wrapping하는 struct입니다.
+```rust
+pub struct Tree(pub Node);
+```
 
 ## test case
 ### case 0
