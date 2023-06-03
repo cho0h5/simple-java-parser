@@ -81,3 +81,87 @@ $ ./syntax_analyzer testcase/sample_input0.sj
 ```
 ## parsing table
 ![parsing table](img/parsing_table.jpg)
+
+## test case
+### case 0
+In testcase/sample_input0.sj
+```
+vtype id semi
+```
+### case 1
+In testcase/sample_input1.sj
+```
+vtype id semi
+vtype id lparen rparen lbrace
+    if lparen boolstr comp boolstr rparen lbrace
+    rbrace
+return id semi rbrace
+```
+### case 2
+In testcase/sample_input2.sj
+```
+class id lbrace
+    vtype id semi
+    vtype id assign id addsub lparen num multdiv id rparen semi
+
+    vtype id lparen rparen lbrace
+        id assign num multdiv num semi
+        while lparen boolstr comp boolstr comp boolstr rparen lbrace
+            id assign literal semi
+            id assign boolstr semi
+        rbrace
+        return id semi
+    rbrace
+
+    vtype id lparen vtype id comma vtype id rparen lbrace
+        if lparen boolstr rparen lbrace
+        rbrace
+        return num addsub id semi
+    rbrace
+
+rbrace
+```
+### case 3
+In testcase/sample_input3.sj
+```
+vtype id lparen rparen lbrace
+    id assign id addsub id multdiv id addsub id multdiv id semi
+
+    return id semi
+rbrace
+```
+### case 4
+In testcase/sample_input4.sj
+```
+vtype id lparen rparen lbrace
+    id assign id multdiv id multdiv id addsub id multdiv id semi
+
+    return id semi
+rbrace
+```
+### fail case 0
+In testcase/sample_fail_input0.sj
+```
+CODE
+```
+### fail case 1
+In testcase/sample_fail_input1.sj
+```
+vtype id semi vtype id lparen rparen lbrace if lparen boolstr comp boolstr rparen lbrace rbrace
+```
+### fail case 2
+In testcase/sample_fail_input2.sj
+```
+vtype id semi vtype id lparen rparen lbrace if lparen boolstr comp boolstr rparen lbrace return id semi rbrace
+```
+### fail case 3
+In testcase/sample_fail_input3.sj
+```
+vtype id lparen rpalren lbrace
+    return id semi
+rbrace
+```
+### fail case 4
+no input
+### fail case 5
+fail to read file
