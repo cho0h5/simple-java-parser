@@ -135,6 +135,27 @@ Step 1. 인자로부터 파일 이름 가져오기
 Step 2. 파일 읽기  
 Step 3. String을 whitespace으로 나누어 token 인식하기  
 Step 4. 인식된 토큰을 parsing하여 parsing tree 생성하기  
+```rust
+fn main() {
+    // 1. 입력받은 파일 이름이 있다면 filename에 저장합니다.
+    let filename = match env::args().nth(1) {
+    };
+
+    // 2. 파일 읽기에 성공하면 raw_contents에 저장합니다.
+    let raw_contents = match fs::read_to_string(filename) {
+    };
+
+    // 3. token을 인식하는데 성공하면 tokens의 배열을 tokens에 저장합니다.
+    //    token_reader::reader_token(...) 함수는 src/token_reader.rs 에 작성되어 있습니다.
+    let tokens = match token_reader::read_tokens(&raw_contents) {
+    };
+
+    // 4. 입력된 tokens를 parsing하고 parse tree를 생성한 후 출력합니다.
+    //    parser::parse(...) 함수는 src/parser/mod.rs 에 작성되어 있습니다.
+    match parser::parse(tokens) {
+    };
+}
+```
 ### Step 3 주요 struct, enum, procedure
 #### read_tokens (In src/token_reader.rs)
 String을 white space로 나누어 문자여 비교를 통해 Token의 배열을 return하는 함수입니다.
@@ -287,6 +308,65 @@ struct StackItem {
 Node를 wrapping하는 struct입니다.
 ```rust
 pub struct Tree(pub Node);
+```
+#### get_reduction_table (In src/parser/parsing_table.rs)
+reduction rule을 hard coding한 함수입니다.  
+CFG에 따라 총 39개의 rule이 작성되어있습니다.
+```rust
+pub fn get_reduction_table() -> Vec<Reduction> {
+    let mut table = vec![];
+
+    table.push(Reduction::from(CODE_, 1));      //  0
+    table.push(Reduction::from(CODE, 2));
+    table.push(Reduction::from(CODE, 2));
+    table.push(Reduction::from(CODE, 2));
+    (생략...)
+    
+    table
+}
+```
+#### Reduction (In src/parser/parsing_table.rs)
+하나의 reduction rule을 나타내는 struct입니다.  
+left는 좌항의 non-terminal을 나타내고, right는 우항의 non-terminal, terminal의 수를 나타냅니다.  
+right는 reduce함수에서 stack에서 pop을 하는 횟수를 확인하는 데 사용됩니다.
+```
+CODE -> ''		// Reduction { left: CODE, right: 0 }
+VDECL -> vtype id semi	// Reduction { left: VDECL, right: 3 }
+```
+```rust
+pub struct Reduction {
+    pub left: Token,
+    pub right: usize,
+}
+```
+#### get_parsing_table (In src/parser/parsing_table.rs)
+이 함수에는 parsing table이 hard coding되어있습니다.
+```rust
+pub fn get_parsing_table() -> Vec<HashMap<Token, TableElement>> {
+    let mut table = vec![];
+
+    // for state 0
+    let mut hashmap = HashMap::new();
+    hashmap.insert(Vtype, Shift(5));
+    hashmap.insert(Class, Shift(6));
+    hashmap.insert(EOL, Reduce(4));
+    (생략...)
+    table.push(hashmap);
+    
+    (생략...)
+    
+    table
+}
+```
+#### TableElement (In src/parser/parsing_table.rs)
+parsing table의 element를 나타내는 요소입니다.
+```rust
+pub enum TableElement {
+    Shift(usize),
+    Reduce(usize),
+    Goto(usize),
+    Accepted,
+}
 ```
 
 ## test case
