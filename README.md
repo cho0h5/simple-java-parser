@@ -129,6 +129,63 @@ EXPR'' -> num
 https://jsmachines.sourceforge.net/machines/slr.html
 ![parsing table](img/parsing_table.jpg)
 
+## 동작 과정
+이 parser는 네가지 단계에 거쳐 parsing tree를 생성합니다.  
+Step 1. 인자로부터 파일 이름 가져오기  
+Step 2. 파일 읽기  
+Step 3. String을 whitespace으로 나누어 token 인식하기  
+Step 4. 인식된 토큰을 parsing하여 parsing tree 생성하기  
+### Step 3 주요 struct, enum, procedure
+#### Token (In src/token_reader.rs)
+terminal과 non-terminal, EOL을 나타내는 enum입니다.
+```rust
+pub enum Token {
+    // terminals
+    Vtype,      // for the types of variables and function
+    Num,        // for signed integers
+    Character,  // for a single character
+    (생략...)
+
+    // for EOL
+    EOL,
+
+    // non-terminals
+    CODE,
+    CODE_,
+    VDECL,
+    (생략...)
+}
+```
+#### Tokens (In src/parser/formatting.rs)
+Token의 배열을 나타내는 struct입니다.  
+여기서 VecDeque는 double-ended queue를 표현하는 Rust의 내장 collection입니다.
+```rust
+pub struct Tokens(pub VecDeque<Node>);
+```
+#### read_tokens (In src/token_reader.rs)
+String을 white space로 나누어 문자여 비교를 통해 Token의 배열을 return하는 함수입니다.
+```rust
+pub fn read_tokens(contents: &String) -> Result<Tokens, UnknownTokenError> {
+    let mut tokens = VecDeque::new();
+
+    for word in contents.split_whitespace() {
+        let token = match word {
+            "vtype" => Token::Vtype,
+            "num" => Token::Num,
+            "character" => Token::Character,
+	    (생략...)
+            // token 인식을 실패하면 UnknownTokenError에 정보를 담아 return합니다.
+            unknown_token => return Err(UnknownTokenError(unknown_token)),
+        };
+        tokens.push_back(Terminal(token));
+    }
+
+    // token을 모두 인식하였다면 마지막에 EOL token을 추가하고 return합니다.
+    tokens.push_back(Terminal(Token::EOL));
+    Ok(Tokens(tokens))
+}
+```
+
 ## test case
 ### case 0
 ```
