@@ -2,10 +2,6 @@
 2023-1 Compiler Assignment: Making Parser for Simple Java  
 team_id: 67
 
-## Todo
-- 코드에 주석 달기
-- 문서 pdf로 변환하기
-
 ## 실행
 ```bash
 $ ./syntax_analyzer testcase/sample_input0.sj
