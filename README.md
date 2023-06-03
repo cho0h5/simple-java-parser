@@ -3,6 +3,7 @@
 team_id: 67
 
 ## 실행
+Ubuntu 20.04.6 LTS x86_64에서 컴파일 되었습니다.
 ```bash
 $ ./syntax_analyzer testcase/sample_input0.sj
 ```
