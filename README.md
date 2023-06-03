@@ -79,7 +79,54 @@ $ ./syntax_analyzer testcase/sample_input0.sj
 37: ODECL -> FDECL ODECL
 38: ODECL -> ''
 ```
+### 변경사항 1 (CODE)
+최상단인 `CODE`를 가리키는 `CODE' -> CODE`를 추가하였습니다.
+```
+CODE -> VDECL CODE
+CODE -> FDECL CODE
+CODE -> CDECL CODE
+CODE -> ''
+```
+->
+```
+CODE' -> CODE
+CODE -> VDECL CODE
+CODE -> FDECL CODE
+CODE -> CDECL CODE
+CODE -> ''
+```
+### 변경사항 2 (COND)
+`COND comp COND comp COND`의 ambiguous를 해결하기 위해 수정하였습니다.
+```
+COND -> COND comp COND
+COND -> boolstr
+```
+->
+```
+COND -> COND comp boolstr
+COND -> boolstr
+```
+### 변경사항 3 (EXPR)
+`addsub`, `multdiv`, `lparen`, `rparen`, `id`, `num`의 우선순위에 대한 ambiguous를 해결하기 위해 수정하였습니다.
+```
+EXPR -> EXPR addsub EXPR
+EXPR -> EXPR multdiv EXPR
+EXPR -> lparen EXPR rparen
+EXPR -> id
+EXPR -> num
+```
+->
+```
+EXPR -> EXPR addsub EXPR'
+EXPR -> EXPR'
+EXPR' -> EXPR' multdiv EXPR''
+EXPR' -> EXPR''
+EXPR'' -> lparen EXPR rparen
+EXPR'' -> id
+EXPR'' -> num
+```
 ## parsing table
+https://jsmachines.sourceforge.net/machines/slr.html
 ![parsing table](img/parsing_table.jpg)
 
 ## test case
