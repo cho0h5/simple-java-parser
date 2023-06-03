@@ -1,8 +1,12 @@
+// 이 파일은 parsing을 위해 필요한 정보인 CFG와 parsing table의 정보가
+// hard coding되어있습니다.
+
 use std::collections::HashMap;
 use TableElement::*;
 use crate::token_reader::Token;
 use crate::token_reader::Token::*;
 
+// parsing table의 각 rule을 나타내는 enum입니다.
 #[derive(Debug, PartialEq)]
 pub enum TableElement {
     Shift(usize),
@@ -11,6 +15,11 @@ pub enum TableElement {
     Accepted,
 }
 
+// reduction table의 각 rule을 나타내는 enum입니다.
+// left는 CFG의 좌항의 non-terminal을 나타내며,
+// right는 CFG 우항의 non-terminal, termianl의 수를 나타냅니다.
+// VDECL -> vtype id semi
+//     => Reduction { left: VDECL, right: 3 }
 #[derive(Clone, Copy)]
 pub struct Reduction {
     pub left: Token,
@@ -18,11 +27,13 @@ pub struct Reduction {
 }
 
 impl Reduction {
+    // Reduction struct를 생성하는 함수입니다.
     fn from(left: Token, right: usize) -> Reduction {
         Reduction { left: left, right: right }
     }
 }
 
+// 총 39개의 reduction rule 정보를 return합니다.
 pub fn get_reduction_table() -> Vec<Reduction> {
     let mut table = vec![];
 
@@ -69,6 +80,10 @@ pub fn get_reduction_table() -> Vec<Reduction> {
     table
 }
 
+// parsing table을 return합니다.
+// 반환 자료형인 Vec<HashMap<Token, TableElement>>는
+// usize(state)와 Token을 key로 하며 TableElement를 element로 가집니다.
+// 이 코드는 html2code/main.py에 의해 생성되었습니다.
 pub fn get_parsing_table() -> Vec<HashMap<Token, TableElement>> {
     let mut table = vec![];
     
@@ -709,6 +724,10 @@ pub fn get_parsing_table() -> Vec<HashMap<Token, TableElement>> {
     table
 }
 
+// 잘 못 입력된 rule이 없는지 검사하는 코드입니다.
+// cargo가 설치되어있다면
+// $ cargo test
+// 를 통해 실행 가능합니다.
 #[cfg(test)]
 mod tests {
     use super::*;
