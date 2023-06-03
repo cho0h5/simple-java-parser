@@ -1,4 +1,8 @@
 #! /usr/bin/python3
+
+# https://jsmachines.sourceforge.net/machines/slr.html의 parsing table의
+# html을 parsing하여 rust 코드를 출력하는 프로그램입니다.
+
 from bs4 import BeautifulSoup as bs
 
 label = ("dummy","Vtype","Id","Semi","Assign","Literal","Character","Boolstr","Addsub","Multdiv","Lparen","Rparen","Num","Lbrace","Rbrace","Comma","If","While","Comp","Else","Return","Class","EOL","CODE_","CODE","VDECL","ASSIGN","RHS","EXPR","EXPR_","EXPR__","FDECL","ARG","MOREARGS","BLOCK","STMT","COND","ELSE","RETURN","CDECL","ODECL")
@@ -37,8 +41,4 @@ while True:
     parsing(soup)
     i += 1
 
-
-
-
 f.close()
-
