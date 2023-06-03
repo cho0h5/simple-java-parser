@@ -156,8 +156,17 @@ pub enum Token {
     (생략...)
 }
 ```
+#### Node (In src/parser/mod.rs)
+terminal과 non-terminal을 나타내며 동시에 tree의 node를 나타내는 enum입니다.  
+read_tokens에서는 `Terminal(Token)`만 사용되며 `NonTerminal(Token, Vec<Node>)`는 Step 4 parse함수에서 사용됩니다.
+```rust
+pub enum Node {
+    Terminal(Token),
+    NonTerminal(Token, Vec<Node>),
+}
+```
 #### Tokens (In src/parser/formatting.rs)
-Token의 배열을 나타내는 struct입니다.  
+Node의 배열을 나타내는 struct입니다.  
 여기서 VecDeque는 double-ended queue를 표현하는 Rust의 내장 collection입니다.
 ```rust
 pub struct Tokens(pub VecDeque<Node>);
